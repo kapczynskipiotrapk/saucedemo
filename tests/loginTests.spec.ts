@@ -1,16 +1,26 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pom/loginpage';
+import { test, expect } from '../fixtures';
 
 
-let loginPage : LoginPage
-
-
-test.beforeEach(async ({page}) => {
-  console.log('Before tests');
-  loginPage = new LoginPage(page);
-
-});
-
-test('login test', async ({ page, browser }) => {
+test('login test', async ({ productsPage, loginPage, page, browser }) => {
     await loginPage.goTo()
+    await loginPage.login("standard_user", "secret_sauce")
+    await productsPage.expectProductsPageLoaded()
 }) 
+
+test('locked user', async ({productsPage, loginPage, page, browser }) => {
+    await loginPage.goTo()
+    await loginPage.login("locked_out_user", "secret_sauce")
+    await loginPage.expectErrorMessageIsDisplayed() 
+}) 
+
+test('session persists after reload', async ({ page, loginPage, productsPage }) => {
+  await loginPage.goTo();
+  await loginPage.login("standard_user", "secret_sauce");
+  await productsPage.expectProductsPageLoaded();
+
+console.log(await page.title()); 
+const url = page.url();
+console.log(url); 
+
+  await productsPage.expectProductsPageLoaded();
+});
