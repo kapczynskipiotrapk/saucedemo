@@ -1,6 +1,6 @@
 import { test as base, expect, Page } from '@playwright/test';
 import { LoginPage } from './pom/loginpage';
-import { ProductsPage } from './pom/productsPage';
+import { ProductsPage } from './pom/productspage';
 
 export const test = base.extend<any>({
   loginPage: async ({ page }: { page: Page }, use: (value: LoginPage) => Promise<void>) => {
