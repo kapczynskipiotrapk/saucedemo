@@ -12,6 +12,15 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 
+
+const ENV = 'dev';
+
+const baseURLs = {
+  dev: 'https://saucedemo.com',
+  test: 'https://test.saucedemo.com',
+  prod: 'https://www.saucedemo.com',
+};
+
 export default defineConfig({
 
   testDir: './tests',
@@ -24,12 +33,16 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+reporter: [
+  ['html', { outputFolder: 'playwright-report', open: 'never' }]
+],
+
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    baseURL: baseURLs[ENV],
     video:'on',
     screenshot: 'only-on-failure',
-
     headless: false,
     viewport: null,
     launchOptions: {
@@ -41,20 +54,21 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'chromium',
+       {
+      name: 'chrome',
       use: {
-        viewport: null,             // <--- najważniejsze, musi być null
-
-
+      browserName: 'chromium',
+        viewport: null,
       },
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
+    {
+      name: 'firefox',
+      use: {
+        browserName: 'firefox',
+        viewport: null,
+      },
+    },
     // {
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'] },
